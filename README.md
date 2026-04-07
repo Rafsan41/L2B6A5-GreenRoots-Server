@@ -52,14 +52,14 @@ Frontend Live     : https://skillbridge.vercel.app
 Backend Live      : https://skillbridge-api.vercel.app
 Demo Video        : https://drive.google.com/file/d/xxx/view
 
-Admin Email       : rafsundipto116@gmail.com
-Admin Password    : rafsan1234
+- Admin Email       : rafsundipto116@gmail.com
+- Admin Password    : rafsan1234
 
-Seller Email      : rjd223341@22gmail.com
-Seller Password   : mitila1234
+- Seller Email      : rjd223341@22gmail.com
+- Seller Password   : mitila1234
 
-Customer Email    : [EMAIL_ADDRESS]
-Customer Password : customer123
+- Customer Email    : orangemonika@deltajohnsons.com
+- Customer Password : password123 
 
 ## Getting Started
 
