@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { categoryService } from "./category.service";
 
-
 const createCategory = async (req: Request, res: Response) => {
     try {
         const { name, slug } = req.body;
@@ -13,19 +12,37 @@ const createCategory = async (req: Request, res: Response) => {
         res.status(201).json({
             success: true,
             message: "Category created successfully",
-            data: result
-        })
+            data: result,
+        });
     } catch (error) {
-        console.log(error)
+        console.log(error);
         res.status(500).json({
             success: false,
             message: "Failed to create category",
-            error: error
-        })
+            error: error,
+        });
     }
-}
+};
 
+const getAllCategories = async (req: Request, res: Response) => {
+    try {
+        const result = await categoryService.getAllCategories();
+        res.status(200).json({
+            success: true,
+            message: "Categories fetched successfully",
+            data: result,
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch categories",
+            error: error,
+        });
+    }
+};
 
 export const categoryController = {
-    createCategory
-}
+    createCategory,
+    getAllCategories,
+};
