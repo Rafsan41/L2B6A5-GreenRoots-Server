@@ -82,7 +82,7 @@ model Medicine {
   updatedAt DateTime @updatedAt
 
   sellerId   String
-  seller     User     @relation("SellerMedicines", fields: [sellerId], references: [id])
+  seller     User?    @relation("SellerMedicines", fields: [sellerId], references: [id])
   categoryId String
   category   Category @relation(fields: [categoryId], references: [id])
 
@@ -154,7 +154,7 @@ model SellerOrder {
   orderId  String
   order    Order  @relation(fields: [orderId], references: [id])
   sellerId String
-  seller   User   @relation(fields: [sellerId], references: [id])
+  seller   User?  @relation(fields: [sellerId], references: [id])
 
   @@unique([orderId, sellerId])
   @@index([sellerId])
@@ -174,7 +174,7 @@ model Review {
 
   // Relations
   customerId String
-  customer   User     @relation(fields: [customerId], references: [id])
+  customer   User?    @relation(fields: [customerId], references: [id])
   medicineId String
   medicine   Medicine @relation(fields: [medicineId], references: [id])
   orderId    String? // Optional: link to specific order for verification
@@ -188,19 +188,19 @@ model Review {
 }
 
 model User {
-  id            String      @id
+  id            String        @id
   name          String
   email         String
-  emailVerified Boolean     @default(false)
+  emailVerified Boolean       @default(false)
   image         String?
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
   sessions      Session[]
   accounts      Account[]
-  role          Role        @default(CUSTOMER)
+  role          Role          @default(CUSTOMER)
   phones        String?
-  status        UserStatus? @default(ACTIVE)
-  medicines     Medicine[]  @relation("SellerMedicines")
+  status        UserStatus?   @default(ACTIVE)
+  medicines     Medicine[]    @relation("SellerMedicines")
   orders        Order[]
   sellerOrders  SellerOrder[]
   reviews       Review[]
