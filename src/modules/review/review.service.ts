@@ -1,4 +1,4 @@
-import { prisma } from "../../lib/prisma";
+import { prisma } from "../../lib/prisma.js";
 
 interface CreateReviewData {
     medicineId: string;
@@ -27,8 +27,8 @@ const createReview = async (customerId: string, data: CreateReviewData) => {
             customerId,
             medicineId: data.medicineId,
             rating: data.rating,
-            comment: data.comment,
-            orderId: data.orderId,
+            comment: data.comment ?? null,
+            orderId: data.orderId ?? null,
         },
         include: {
             customer: { select: { id: true, name: true, image: true } },

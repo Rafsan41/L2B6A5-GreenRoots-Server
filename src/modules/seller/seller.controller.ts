@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { sellerService } from "./seller.service";
-import { OrderStatus } from "../../../generated/prisma/client";
+import { sellerService } from "./seller.service.js";
+import { OrderStatus } from "../../../generated/prisma/client.js";
 
 const createMedicine = async (req: Request, res: Response) => {
     try {

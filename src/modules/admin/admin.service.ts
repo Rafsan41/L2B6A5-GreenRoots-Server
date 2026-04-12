@@ -1,5 +1,5 @@
-import { UserStatus } from "../../../generated/prisma/client";
-import { prisma } from "../../lib/prisma";
+import { UserStatus } from "../../../generated/prisma/client.js";
+import { prisma } from "../../lib/prisma.js";
 
 // ── Users ──────────────────────────────────────────────────────────────────
 

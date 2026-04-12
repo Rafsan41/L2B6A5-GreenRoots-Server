@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { adminService } from "./admin.service";
-import { UserStatus } from "../../../generated/prisma/client";
+import { adminService } from "./admin.service.js";
+import { UserStatus } from "../../../generated/prisma/client.js";
 
 // ── Users ──────────────────────────────────────────────────────────────────
 

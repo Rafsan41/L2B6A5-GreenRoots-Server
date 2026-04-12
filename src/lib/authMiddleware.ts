@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { auth as betterAuth } from "./auth";
+import { auth as betterAuth } from "./auth.js";
 
 export enum UserRole {
     CUSTOMER = "CUSTOMER",

@@ -1,5 +1,5 @@
-import { Medicine, OrderStatus } from "../../../generated/prisma/client";
-import { prisma } from "../../lib/prisma";
+import { Medicine, OrderStatus } from "../../../generated/prisma/client.js";
+import { prisma } from "../../lib/prisma.js";
 
 const createMedicine = async (sellerId: string, data: Omit<Medicine, "id" | "createdAt" | "updatedAt" | "sellerId">) => {
     const result = await prisma.medicine.create({

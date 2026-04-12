@@ -1,5 +1,5 @@
-import { OrderStatus, PaymentMethod } from "../../../generated/prisma/client";
-import { prisma } from "../../lib/prisma";
+import { OrderStatus, PaymentMethod } from "../../../generated/prisma/client.js";
+import { prisma } from "../../lib/prisma.js";
 
 interface CreateOrderItem {
     medicineId: string;
@@ -55,9 +55,9 @@ const createOrder = async (customerId: string, data: CreateOrderData) => {
                 total,
                 shippingAddress: data.shippingAddress,
                 shippingCity: data.shippingCity,
-                shippingPostalCode: data.shippingPostalCode,
-                paymentMethod: data.paymentMethod || PaymentMethod.CASH_ON_DELIVERY,
-                notes: data.notes,
+                shippingPostalCode: data.shippingPostalCode ?? null,
+                paymentMethod: data.paymentMethod ?? PaymentMethod.CASH_ON_DELIVERY,
+                notes: data.notes ?? null,
                 customerId,
                 items: {
                     create: orderItems,
