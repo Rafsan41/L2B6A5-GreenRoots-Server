@@ -45,6 +45,10 @@ const updateProfile = async (req: Request, res: Response) => {
         });
     } catch (error: any) {
         console.error(error);
+        if (error.message?.includes("not found")) {
+            res.status(404).json({ success: false, message: error.message, error: error.message });
+            return;
+        }
         res.status(500).json({
             success: false,
             message: "Failed to update profile",
@@ -53,7 +57,29 @@ const updateProfile = async (req: Request, res: Response) => {
     }
 };
 
+const getDashboardStats = async (req: Request, res: Response) => {
+    try {
+        const stats = await userService.getCustomerDashboardStats(req.user!.id);
+        res.status(200).json({ success: true, message: "Dashboard stats fetched successfully", data: stats });
+    } catch (error: any) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Failed to fetch dashboard stats", error: error.message });
+    }
+};
+
+const getSellerStats = async (req: Request, res: Response) => {
+    try {
+        const stats = await userService.getCustomerSellerStats(req.user!.id);
+        res.status(200).json({ success: true, message: "Seller stats fetched successfully", data: stats });
+    } catch (error: any) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Failed to fetch seller stats", error: error.message });
+    }
+};
+
 export const userController = {
     getProfile,
     updateProfile,
+    getDashboardStats,
+    getSellerStats,
 };

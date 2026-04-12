@@ -8,6 +8,17 @@ interface CreateReviewData {
 }
 
 const createReview = async (customerId: string, data: CreateReviewData) => {
+    if (data.rating < 1 || data.rating > 5) {
+        throw new Error("Rating must be between 1 and 5");
+    }
+
+    const medicine = await prisma.medicine.findFirst({
+        where: { id: data.medicineId, isActive: true },
+    });
+    if (!medicine) {
+        throw new Error("Medicine not found");
+    }
+
     // Verify the customer has ordered this medicine
     if (data.orderId) {
         const orderItem = await prisma.orderItem.findFirst({

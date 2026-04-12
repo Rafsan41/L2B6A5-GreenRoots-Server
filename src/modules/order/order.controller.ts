@@ -34,9 +34,18 @@ const createOrder = async (req: Request, res: Response) => {
         });
     } catch (error: any) {
         console.error(error);
+        if (error.message?.includes("not found") || error.message?.includes("inactive")) {
+            res.status(404).json({ success: false, message: error.message, error: error.message });
+            return;
+        }
+        if (error.message?.includes("stock") || error.message?.includes("Insufficient")) {
+            res.status(409).json({ success: false, message: error.message, error: error.message });
+            return;
+        }
         res.status(400).json({
             success: false,
             message: error.message || "Failed to place order",
+            error: error.message,
         });
     }
 };
@@ -94,9 +103,18 @@ const cancelOrder = async (req: Request, res: Response) => {
         });
     } catch (error: any) {
         console.error(error);
+        if (error.message?.includes("not found")) {
+            res.status(404).json({ success: false, message: error.message, error: error.message });
+            return;
+        }
+        if (error.message?.includes("Only PLACED")) {
+            res.status(409).json({ success: false, message: error.message, error: error.message });
+            return;
+        }
         res.status(400).json({
             success: false,
             message: error.message || "Failed to cancel order",
+            error: error.message,
         });
     }
 };

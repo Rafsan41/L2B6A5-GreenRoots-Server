@@ -28,12 +28,12 @@ const updateUserStatus = async (req: Request, res: Response) => {
         const { status } = req.body;
 
         if (!status) {
-            res.status(400).json({ success: false, message: "Missing required field: status" });
+            res.status(400).json({ success: false, message: "Missing required field: status", error: "status is required" });
             return;
         }
 
         if (!Object.values(UserStatus).includes(status)) {
-            res.status(400).json({ success: false, message: `Invalid status. Valid values: ${Object.values(UserStatus).join(", ")}` });
+            res.status(400).json({ success: false, message: `Invalid status. Valid values: ${Object.values(UserStatus).join(", ")}`, error: "Invalid status value" });
             return;
         }
 
@@ -45,9 +45,14 @@ const updateUserStatus = async (req: Request, res: Response) => {
         });
     } catch (error: any) {
         console.error(error);
+        if (error.message?.includes("not found")) {
+            res.status(404).json({ success: false, message: error.message, error: error.message });
+            return;
+        }
         res.status(400).json({
             success: false,
             message: error.message || "Failed to update user status",
+            error: error.message,
         });
     }
 };
@@ -113,12 +118,17 @@ const updateCategory = async (req: Request, res: Response) => {
     } catch (error: any) {
         console.error(error);
         if (error.code === "P2002") {
-            res.status(409).json({ success: false, message: "Category name or slug already exists" });
+            res.status(409).json({ success: false, message: "Category name or slug already exists", error: error.message });
+            return;
+        }
+        if (error.message?.includes("not found")) {
+            res.status(404).json({ success: false, message: error.message, error: error.message });
             return;
         }
         res.status(400).json({
             success: false,
             message: error.message || "Failed to update category",
+            error: error.message,
         });
     }
 };
@@ -133,9 +143,14 @@ const deleteCategory = async (req: Request, res: Response) => {
         });
     } catch (error: any) {
         console.error(error);
+        if (error.message?.includes("not found")) {
+            res.status(404).json({ success: false, message: error.message, error: error.message });
+            return;
+        }
         res.status(400).json({
             success: false,
             message: error.message || "Failed to delete category",
+            error: error.message,
         });
     }
 };
@@ -143,9 +158,10 @@ const deleteCategory = async (req: Request, res: Response) => {
 const getStatistics = async (req: Request, res: Response) => {
     try {
         const stats = await adminService.getAdminStatistics();
-        res.status(200).json({ success: true, data: stats });
+        res.status(200).json({ success: true, message: "Statistics fetched successfully", data: stats });
     } catch (error: any) {
-        res.status(500).json({ success: false, message: error.message });
+        console.error(error);
+        res.status(500).json({ success: false, message: "Failed to fetch statistics", error: error.message });
     }
 };
 

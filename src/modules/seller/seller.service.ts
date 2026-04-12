@@ -2,6 +2,13 @@ import { Medicine, OrderStatus } from "../../../generated/prisma/client.js";
 import { prisma } from "../../lib/prisma.js";
 
 const createMedicine = async (sellerId: string, data: Omit<Medicine, "id" | "createdAt" | "updatedAt" | "sellerId">) => {
+    if (Number(data.price) <= 0) {
+        throw new Error("Price must be greater than 0");
+    }
+    if (data.stock < 0) {
+        throw new Error("Stock cannot be negative");
+    }
+
     const result = await prisma.medicine.create({
         data: { ...data, sellerId },
     });
@@ -36,6 +43,7 @@ const updateMedicine = async (id: string, sellerId: string, data: UpdateMedicine
 const deleteMedicine = async (id: string, sellerId: string) => {
     const medicine = await prisma.medicine.findFirst({ where: { id, sellerId } });
     if (!medicine) throw new Error("Medicine not found or you do not own it");
+    if (!medicine.isActive) throw new Error("Medicine is already deleted");
 
     // Soft delete
     await prisma.medicine.update({

@@ -28,12 +28,17 @@ const createReview = async (req: Request, res: Response) => {
     } catch (error: any) {
         console.error(error);
         if (error.code === "P2002") {
-            res.status(409).json({ success: false, message: "You have already reviewed this medicine" });
+            res.status(409).json({ success: false, message: "You have already reviewed this medicine", error: error.message });
+            return;
+        }
+        if (error.message?.includes("not found")) {
+            res.status(404).json({ success: false, message: error.message, error: error.message });
             return;
         }
         res.status(400).json({
             success: false,
             message: error.message || "Failed to submit review",
+            error: error.message,
         });
     }
 };

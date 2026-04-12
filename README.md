@@ -347,27 +347,3 @@ All responses follow a consistent shape:
 ## Author
 
 **Rafsan Jani Dipta**
-
-
-
-
-
-
-
-1.Customer Dashboard
-
-customer own  segments
-- customer own orders
-- customer own reviews
-- customer total order ( palaced, processing,shipped,delivered,cancelled)
-- customer total 
-
-Seller segments-
-
-- seller  review (rating and comment) 
-- seller successful delivery rate
-- seller total medicine categorywise
-
-
-
-* Total Customer
