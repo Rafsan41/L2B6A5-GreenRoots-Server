@@ -17,5 +17,7 @@ router.get("/admin/orders", requireAuth(UserRole.ADMIN), adminController.getAllO
 // Categories
 router.put("/admin/categories/:id", requireAuth(UserRole.ADMIN), adminController.updateCategory);
 router.delete("/admin/categories/:id", requireAuth(UserRole.ADMIN), adminController.deleteCategory);
+router.get("/admin/statistics", requireAuth(UserRole.ADMIN), adminController.getStatistics);
+
 
 export const adminRouter: Router = router;

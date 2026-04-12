@@ -87,8 +87,75 @@ const deleteCategory = async (id: string) => {
     return { message: "Category deleted successfully" };
 };
 
+
+
+const getAdminStatistics = async () => {
+    const [
+        totalUsers,
+        totalCustomers,
+        totalBannedCustomers,
+        totalSellers,
+        totalApprovedSellers,
+        totalPendingSellers,
+        totalRejectedSellers,
+        totalSuspendedSellers,
+        totalCategories,
+        totalMedicines,
+    ] = await Promise.all([
+        prisma.user.count(),
+        prisma.user.count({ where: { role: "CUSTOMER" } }),
+        prisma.user.count({ where: { role: "CUSTOMER", status: "BANNED" } }),
+        prisma.user.count({ where: { role: "SELLER" } }),
+        prisma.user.count({ where: { role: "SELLER", status: "ACTIVE" } }),
+        prisma.user.count({ where: { role: "SELLER", status: "PENDING" } }),
+        prisma.user.count({ where: { role: "SELLER", status: "SUSPENDED" } }),
+        prisma.user.count({ where: { role: "SELLER", status: "BANNED" } }),
+        prisma.category.count(),
+        prisma.medicine.count({ where: { isActive: true } }),
+    ]);
+
+    // Sales by seller
+    const sellers = await prisma.user.findMany({
+        where: { role: "SELLER" },
+        select: {
+            id: true,
+            name: true,
+            sellerOrders: {
+                include: {
+                    order: { select: { total: true } },
+                },
+            },
+        },
+    });
+
+    const salesBySeller = sellers.map((seller) => ({
+        sellerId: seller.id,
+        sellerName: seller.name,
+        totalOrders: seller.sellerOrders.length,
+        totalRevenue: seller.sellerOrders.reduce(
+            (sum, so) => sum + Number(so.order.total),
+            0
+        ),
+    }));
+
+    return {
+        users: { totalUsers, totalCustomers, totalBannedCustomers },
+        sellers: {
+            totalSellers,
+            totalApprovedSellers,
+            totalPendingSellers,
+            totalRejectedSellers,
+            totalSuspendedSellers,
+            salesBySeller,
+        },
+        medicines: { totalMedicines, totalCategories },
+    };
+};
+
+
 export const adminService = {
     getAllUsers,
+    getAdminStatistics,
     updateUserStatus,
     getAllMedicines,
     getAllOrders,
