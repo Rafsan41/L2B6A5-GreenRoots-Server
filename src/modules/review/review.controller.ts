@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { reviewService } from "./review.service.js";
 
-const createReview = async (req: Request, res: Response) => {
+const createReview = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id: medicineId } = req.params;
         const { rating, comment, orderId } = req.body;
@@ -26,24 +26,11 @@ const createReview = async (req: Request, res: Response) => {
             data: result,
         });
     } catch (error: any) {
-        console.error(error);
-        if (error.code === "P2002") {
-            res.status(409).json({ success: false, message: "You have already reviewed this medicine", error: error.message });
-            return;
-        }
-        if (error.message?.includes("not found")) {
-            res.status(404).json({ success: false, message: error.message, error: error.message });
-            return;
-        }
-        res.status(400).json({
-            success: false,
-            message: error.message || "Failed to submit review",
-            error: error.message,
-        });
+        next(error);
     }
 };
 
-const getMedicineReviews = async (req: Request, res: Response) => {
+const getMedicineReviews = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id: medicineId } = req.params;
         const result = await reviewService.getMedicineReviews(medicineId as string);
@@ -53,12 +40,7 @@ const getMedicineReviews = async (req: Request, res: Response) => {
             data: result,
         });
     } catch (error: any) {
-        console.error(error);
-        res.status(500).json({
-            success: false,
-            message: "Failed to fetch reviews",
-            error: error.message,
-        });
+        next(error);
     }
 };
 

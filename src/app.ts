@@ -10,6 +10,7 @@ import { sellerReviewRouter } from "./modules/sellerReview/sellerReview.router.j
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth.js";
 import cors from "cors"
+import errorHandler from "./middlewares/globalErrorHandler.js";
 const app: Application = express();
 
 app.use(express.json());
@@ -36,6 +37,8 @@ app.use("/api", sellerRouter);
 app.use("/api", adminRouter);
 
 app.use("/api", sellerReviewRouter);
+
+app.use(errorHandler)
 
 app.get("/", (_req, res) => {
     res.send(`

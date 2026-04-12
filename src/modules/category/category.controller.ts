@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { categoryService } from "./category.service.js";
 
-const createCategory = async (req: Request, res: Response) => {
+const createCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { name, slug } = req.body;
         if (!name || !slug) {
@@ -15,20 +15,11 @@ const createCategory = async (req: Request, res: Response) => {
             data: result,
         });
     } catch (error: any) {
-        console.error(error);
-        if (error.code === "P2002") {
-            res.status(409).json({ success: false, message: "Category name or slug already exists", error: error.message });
-            return;
-        }
-        res.status(500).json({
-            success: false,
-            message: "Failed to create category",
-            error: error.message,
-        });
+        next(error);
     }
 };
 
-const getAllCategories = async (_req: Request, res: Response) => {
+const getAllCategories = async (_req: Request, res: Response, next: NextFunction) => {
     try {
         const result = await categoryService.getAllCategories();
         res.status(200).json({
@@ -37,12 +28,7 @@ const getAllCategories = async (_req: Request, res: Response) => {
             data: result,
         });
     } catch (error: any) {
-        console.error(error);
-        res.status(500).json({
-            success: false,
-            message: "Failed to fetch categories",
-            error: error.message,
-        });
+        next(error);
     }
 };
 

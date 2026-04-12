@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { sellerReviewService } from "./sellerReview.service.js";
 
-const createSellerReview = async (req: Request, res: Response) => {
+const createSellerReview = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { sellerId, rating, comment, parentId } = req.body;
 
@@ -19,31 +19,17 @@ const createSellerReview = async (req: Request, res: Response) => {
         const result = await sellerReviewService.createSellerReview(customerId, { sellerId, rating, comment, parentId });
         res.status(201).json({ success: true, message: "Seller review submitted successfully", data: result });
     } catch (error: any) {
-        console.error(error);
-        if (error.code === "P2002") {
-            res.status(409).json({ success: false, message: "You have already reviewed this seller", error: error.message });
-            return;
-        }
-        if (error.message?.includes("not found")) {
-            res.status(404).json({ success: false, message: error.message, error: error.message });
-            return;
-        }
-        res.status(400).json({ success: false, message: error.message || "Failed to submit seller review", error: error.message });
+        next(error);
     }
 };
 
-const getSellerReviews = async (req: Request, res: Response) => {
+const getSellerReviews = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { sellerId } = req.params;
         const result = await sellerReviewService.getSellerReviews(sellerId as string);
         res.status(200).json({ success: true, message: "Seller reviews fetched successfully", data: result });
     } catch (error: any) {
-        console.error(error);
-        if (error.message?.includes("not found")) {
-            res.status(404).json({ success: false, message: error.message, error: error.message });
-            return;
-        }
-        res.status(500).json({ success: false, message: "Failed to fetch seller reviews", error: error.message });
+        next(error);
     }
 };
 

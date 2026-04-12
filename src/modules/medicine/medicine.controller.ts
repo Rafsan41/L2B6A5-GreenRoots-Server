@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { medicineService } from "./medicine.service.js";
 
-const getAllMedicines = async (req: Request, res: Response) => {
+const getAllMedicines = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const result = await medicineService.getAllMedicines(req.query as any);
         res.status(200).json({
@@ -10,16 +10,11 @@ const getAllMedicines = async (req: Request, res: Response) => {
             data: result,
         });
     } catch (error: any) {
-        console.error(error);
-        res.status(500).json({
-            success: false,
-            message: "Failed to fetch medicines",
-            error: error.message,
-        });
+        next(error)
     }
 };
 
-const getMedicineById = async (req: Request, res: Response) => {
+const getMedicineById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const result = await medicineService.getMedicineById(req.params.id as string);
         if (!result) {
@@ -32,12 +27,7 @@ const getMedicineById = async (req: Request, res: Response) => {
             data: result,
         });
     } catch (error: any) {
-        console.error(error);
-        res.status(500).json({
-            success: false,
-            message: "Failed to fetch medicine",
-            error: error.message,
-        });
+        next(error)
     }
 };
 

@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { orderService } from "./order.service.js";
 
-const createOrder = async (req: Request, res: Response) => {
+const createOrder = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { items, shippingAddress, shippingCity } = req.body;
 
@@ -33,24 +33,11 @@ const createOrder = async (req: Request, res: Response) => {
             data: result,
         });
     } catch (error: any) {
-        console.error(error);
-        if (error.message?.includes("not found") || error.message?.includes("inactive")) {
-            res.status(404).json({ success: false, message: error.message, error: error.message });
-            return;
-        }
-        if (error.message?.includes("stock") || error.message?.includes("Insufficient")) {
-            res.status(409).json({ success: false, message: error.message, error: error.message });
-            return;
-        }
-        res.status(400).json({
-            success: false,
-            message: error.message || "Failed to place order",
-            error: error.message,
-        });
+        next(error);
     }
 };
 
-const getMyOrders = async (req: Request, res: Response) => {
+const getMyOrders = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const result = await orderService.getCustomerOrders(req.user!.id);
         res.status(200).json({
@@ -59,23 +46,17 @@ const getMyOrders = async (req: Request, res: Response) => {
             data: result,
         });
     } catch (error: any) {
-        console.error(error);
-        res.status(500).json({
-            success: false,
-            message: "Failed to fetch orders",
-            error: error.message,
-        });
+        next(error);
     }
 };
 
-const getOrderById = async (req: Request, res: Response) => {
+const getOrderById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
         const result = await orderService.getOrderById(id as string, req.user!.id);
 
         if (!result) {
-            res.status(404).json({ success: false, message: "Order not found" });
-            return;
+            throw new Error("Order not found");
         }
 
         res.status(200).json({
@@ -84,16 +65,11 @@ const getOrderById = async (req: Request, res: Response) => {
             data: result,
         });
     } catch (error: any) {
-        console.error(error);
-        res.status(500).json({
-            success: false,
-            message: "Failed to fetch order",
-            error: error.message,
-        });
+        next(error);
     }
 };
 
-const cancelOrder = async (req: Request, res: Response) => {
+const cancelOrder = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
         const result = await orderService.cancelOrder(id as string, req.user!.id);
@@ -102,20 +78,7 @@ const cancelOrder = async (req: Request, res: Response) => {
             message: result.message,
         });
     } catch (error: any) {
-        console.error(error);
-        if (error.message?.includes("not found")) {
-            res.status(404).json({ success: false, message: error.message, error: error.message });
-            return;
-        }
-        if (error.message?.includes("Only PLACED")) {
-            res.status(409).json({ success: false, message: error.message, error: error.message });
-            return;
-        }
-        res.status(400).json({
-            success: false,
-            message: error.message || "Failed to cancel order",
-            error: error.message,
-        });
+        next(error);
     }
 };
 

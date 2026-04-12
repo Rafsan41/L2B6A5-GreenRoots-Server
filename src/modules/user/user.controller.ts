@@ -1,13 +1,12 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { userService } from "./user.service.js";
 
-const getProfile = async (req: Request, res: Response) => {
+const getProfile = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const result = await userService.getProfile(req.user!.id);
 
         if (!result) {
-            res.status(404).json({ success: false, message: "User not found" });
-            return;
+            throw new Error("User not found");
         }
 
         res.status(200).json({
@@ -16,16 +15,11 @@ const getProfile = async (req: Request, res: Response) => {
             data: result,
         });
     } catch (error: any) {
-        console.error(error);
-        res.status(500).json({
-            success: false,
-            message: "Failed to fetch profile",
-            error: error.message,
-        });
+        next(error);
     }
 };
 
-const updateProfile = async (req: Request, res: Response) => {
+const updateProfile = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { name, image, phones } = req.body;
 
@@ -44,36 +38,25 @@ const updateProfile = async (req: Request, res: Response) => {
             data: result,
         });
     } catch (error: any) {
-        console.error(error);
-        if (error.message?.includes("not found")) {
-            res.status(404).json({ success: false, message: error.message, error: error.message });
-            return;
-        }
-        res.status(500).json({
-            success: false,
-            message: "Failed to update profile",
-            error: error.message,
-        });
+        next(error);
     }
 };
 
-const getDashboardStats = async (req: Request, res: Response) => {
+const getDashboardStats = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const stats = await userService.getCustomerDashboardStats(req.user!.id);
         res.status(200).json({ success: true, message: "Dashboard stats fetched successfully", data: stats });
     } catch (error: any) {
-        console.error(error);
-        res.status(500).json({ success: false, message: "Failed to fetch dashboard stats", error: error.message });
+        next(error);
     }
 };
 
-const getSellerStats = async (req: Request, res: Response) => {
+const getSellerStats = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const stats = await userService.getCustomerSellerStats(req.user!.id);
         res.status(200).json({ success: true, message: "Seller stats fetched successfully", data: stats });
     } catch (error: any) {
-        console.error(error);
-        res.status(500).json({ success: false, message: "Failed to fetch seller stats", error: error.message });
+        next(error);
     }
 };
 

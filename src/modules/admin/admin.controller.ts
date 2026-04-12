@@ -1,10 +1,10 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { adminService } from "./admin.service.js";
 import { UserStatus } from "../../../generated/prisma/client.js";
 
 // ── Users ──────────────────────────────────────────────────────────────────
 
-const getAllUsers = async (_req: Request, res: Response) => {
+const getAllUsers = async (_req: Request, res: Response, next: NextFunction) => {
     try {
         const result = await adminService.getAllUsers();
         res.status(200).json({
@@ -13,16 +13,11 @@ const getAllUsers = async (_req: Request, res: Response) => {
             data: result,
         });
     } catch (error: any) {
-        console.error(error);
-        res.status(500).json({
-            success: false,
-            message: "Failed to fetch users",
-            error: error.message,
-        });
+        next(error);
     }
 };
 
-const updateUserStatus = async (req: Request, res: Response) => {
+const updateUserStatus = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = req.params.id as string;
         const { status } = req.body;
@@ -44,22 +39,13 @@ const updateUserStatus = async (req: Request, res: Response) => {
             data: result,
         });
     } catch (error: any) {
-        console.error(error);
-        if (error.message?.includes("not found")) {
-            res.status(404).json({ success: false, message: error.message, error: error.message });
-            return;
-        }
-        res.status(400).json({
-            success: false,
-            message: error.message || "Failed to update user status",
-            error: error.message,
-        });
+        next(error);
     }
 };
 
 // ── Medicines ──────────────────────────────────────────────────────────────
 
-const getAllMedicines = async (_req: Request, res: Response) => {
+const getAllMedicines = async (_req: Request, res: Response, next: NextFunction) => {
     try {
         const result = await adminService.getAllMedicines();
         res.status(200).json({
@@ -68,18 +54,13 @@ const getAllMedicines = async (_req: Request, res: Response) => {
             data: result,
         });
     } catch (error: any) {
-        console.error(error);
-        res.status(500).json({
-            success: false,
-            message: "Failed to fetch medicines",
-            error: error.message,
-        });
+        next(error);
     }
 };
 
 // ── Orders ─────────────────────────────────────────────────────────────────
 
-const getAllOrders = async (_req: Request, res: Response) => {
+const getAllOrders = async (_req: Request, res: Response, next: NextFunction) => {
     try {
         const result = await adminService.getAllOrders();
         res.status(200).json({
@@ -88,18 +69,13 @@ const getAllOrders = async (_req: Request, res: Response) => {
             data: result,
         });
     } catch (error: any) {
-        console.error(error);
-        res.status(500).json({
-            success: false,
-            message: "Failed to fetch orders",
-            error: error.message,
-        });
+        next(error);
     }
 };
 
 // ── Categories ─────────────────────────────────────────────────────────────
 
-const updateCategory = async (req: Request, res: Response) => {
+const updateCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = req.params.id as string;
         const { name, slug, description, image } = req.body;
@@ -116,24 +92,11 @@ const updateCategory = async (req: Request, res: Response) => {
             data: result,
         });
     } catch (error: any) {
-        console.error(error);
-        if (error.code === "P2002") {
-            res.status(409).json({ success: false, message: "Category name or slug already exists", error: error.message });
-            return;
-        }
-        if (error.message?.includes("not found")) {
-            res.status(404).json({ success: false, message: error.message, error: error.message });
-            return;
-        }
-        res.status(400).json({
-            success: false,
-            message: error.message || "Failed to update category",
-            error: error.message,
-        });
+        next(error);
     }
 };
 
-const deleteCategory = async (req: Request, res: Response) => {
+const deleteCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = req.params.id as string;
         const result = await adminService.deleteCategory(id);
@@ -142,26 +105,16 @@ const deleteCategory = async (req: Request, res: Response) => {
             message: result.message,
         });
     } catch (error: any) {
-        console.error(error);
-        if (error.message?.includes("not found")) {
-            res.status(404).json({ success: false, message: error.message, error: error.message });
-            return;
-        }
-        res.status(400).json({
-            success: false,
-            message: error.message || "Failed to delete category",
-            error: error.message,
-        });
+        next(error);
     }
 };
 
-const getStatistics = async (req: Request, res: Response) => {
+const getStatistics = async (_req: Request, res: Response, next: NextFunction) => {
     try {
         const stats = await adminService.getAdminStatistics();
         res.status(200).json({ success: true, message: "Statistics fetched successfully", data: stats });
     } catch (error: any) {
-        console.error(error);
-        res.status(500).json({ success: false, message: "Failed to fetch statistics", error: error.message });
+        next(error);
     }
 };
 
