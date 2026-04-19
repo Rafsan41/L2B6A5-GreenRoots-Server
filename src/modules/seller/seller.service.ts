@@ -1,6 +1,14 @@
 import { Medicine, OrderStatus } from "../../../generated/prisma/client.js";
 import { prisma } from "../../lib/prisma.js";
 
+const getSellerMedicines = async (sellerId: string) => {
+    return prisma.medicine.findMany({
+        where: { sellerId },
+        orderBy: { createdAt: "desc" },
+        include: { category: { select: { id: true, name: true, slug: true } } },
+    });
+};
+
 const createMedicine = async (sellerId: string, data: Omit<Medicine, "id" | "createdAt" | "updatedAt" | "sellerId">) => {
     if (Number(data.price) <= 0) {
         throw new Error("Price must be greater than 0");
@@ -89,11 +97,12 @@ const updateOrderStatus = async (orderId: string, sellerId: string, status: Orde
         throw new Error(`Cannot transition from ${sellerOrder.status} to ${status}`);
     }
 
-    const updated = await prisma.sellerOrder.update({
-        where: { id: sellerOrder.id },
-        data: { status },
-    });
-    return updated;
+    await prisma.$transaction([
+        prisma.sellerOrder.update({ where: { id: sellerOrder.id }, data: { status } }),
+        prisma.order.update({ where: { id: orderId }, data: { status } }),
+    ]);
+
+    return { orderId, status };
 };
 
 const getSellerDashboardStats = async (sellerId: string) => {
@@ -383,6 +392,7 @@ const getSellerCustomerStats = async (sellerId: string) => {
 };
 
 export const sellerService = {
+    getSellerMedicines,
     createMedicine,
     updateMedicine,
     deleteMedicine,

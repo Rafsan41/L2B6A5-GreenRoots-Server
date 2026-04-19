@@ -10,9 +10,11 @@ router.patch("/admin/users/:id", requireAuth(UserRole.ADMIN), adminController.up
 
 // Medicines
 router.get("/admin/medicines", requireAuth(UserRole.ADMIN), adminController.getAllMedicines);
+router.patch("/admin/medicines/:id/toggle", requireAuth(UserRole.ADMIN), adminController.toggleMedicine);
 
 // Orders
 router.get("/admin/orders", requireAuth(UserRole.ADMIN), adminController.getAllOrders);
+router.patch("/admin/orders/:id", requireAuth(UserRole.ADMIN), adminController.updateOrderStatus);
 
 // Categories
 router.put("/admin/categories/:id", requireAuth(UserRole.ADMIN), adminController.updateCategory);

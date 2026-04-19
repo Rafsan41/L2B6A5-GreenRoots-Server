@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { adminService } from "./admin.service.js";
-import { UserStatus } from "../../../generated/prisma/client.js";
+import { OrderStatus, UserStatus } from "../../../generated/prisma/client.js";
 
 // ── Users ──────────────────────────────────────────────────────────────────
 
@@ -58,6 +58,13 @@ const getAllMedicines = async (_req: Request, res: Response, next: NextFunction)
     }
 };
 
+const toggleMedicine = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const result = await adminService.toggleMedicine(req.params.id);
+        res.status(200).json({ success: true, message: "Medicine status toggled", data: result });
+    } catch (error: any) { next(error); }
+};
+
 // ── Orders ─────────────────────────────────────────────────────────────────
 
 const getAllOrders = async (_req: Request, res: Response, next: NextFunction) => {
@@ -68,6 +75,23 @@ const getAllOrders = async (_req: Request, res: Response, next: NextFunction) =>
             message: "Orders fetched successfully",
             data: result,
         });
+    } catch (error: any) {
+        next(error);
+    }
+};
+
+const updateOrderStatus = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const id = req.params.id as string;
+        const { status } = req.body;
+
+        if (!status || !Object.values(OrderStatus).includes(status)) {
+            res.status(400).json({ success: false, message: `Invalid status. Valid values: ${Object.values(OrderStatus).join(", ")}` });
+            return;
+        }
+
+        const result = await adminService.updateOrderStatus(id, status);
+        res.status(200).json({ success: true, message: "Order status updated", data: result });
     } catch (error: any) {
         next(error);
     }
@@ -124,7 +148,9 @@ export const adminController = {
     getStatistics,
     updateUserStatus,
     getAllMedicines,
+    toggleMedicine,
     getAllOrders,
+    updateOrderStatus,
     updateCategory,
     deleteCategory,
 };

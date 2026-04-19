@@ -1,4 +1,4 @@
-import { UserStatus } from "../../../generated/prisma/client.js";
+import { OrderStatus, UserStatus } from "../../../generated/prisma/client.js";
 import { prisma } from "../../lib/prisma.js";
 
 // ── Users ──────────────────────────────────────────────────────────────────
@@ -34,6 +34,12 @@ const updateUserStatus = async (id: string, status: UserStatus) => {
 
 // ── Medicines ──────────────────────────────────────────────────────────────
 
+const toggleMedicine = async (id: string) => {
+    const med = await prisma.medicine.findUnique({ where: { id } });
+    if (!med) throw new Error("Medicine not found");
+    return prisma.medicine.update({ where: { id }, data: { isActive: !med.isActive } });
+};
+
 const getAllMedicines = async () => {
     const medicines = await prisma.medicine.findMany({
         orderBy: { createdAt: "desc" },
@@ -47,14 +53,57 @@ const getAllMedicines = async () => {
 
 // ── Orders ─────────────────────────────────────────────────────────────────
 
+const updateOrderStatus = async (id: string, status: OrderStatus) => {
+    const order = await prisma.order.findUnique({
+        where: { id },
+        include: {
+            customer: { select: { id: true, role: true } },
+            items: {
+                include: {
+                    medicine: { select: { id: true, slug: true } },
+                },
+            },
+        },
+    });
+    if (!order) throw new Error("Order not found");
+
+    const updated = await prisma.order.update({ where: { id }, data: { status } });
+
+    // Auto-restock: when a seller's order is delivered, increment their matching medicine stock
+    if (status === "DELIVERED" && order.customer.role === "SELLER") {
+        const buyerId = order.customer.id;
+        await Promise.all(
+            order.items.map(async (item) => {
+                const buyerMedicine = await prisma.medicine.findFirst({
+                    where: { slug: item.medicine.slug, sellerId: buyerId },
+                });
+                if (buyerMedicine) {
+                    await prisma.medicine.update({
+                        where: { id: buyerMedicine.id },
+                        data: { stock: { increment: item.quantity } },
+                    });
+                }
+            })
+        );
+    }
+
+    return updated;
+};
+
 const getAllOrders = async () => {
     const orders = await prisma.order.findMany({
         orderBy: { createdAt: "desc" },
         include: {
-            customer: { select: { id: true, name: true, email: true } },
+            customer: { select: { id: true, name: true, email: true, role: true } },
             items: {
                 include: {
-                    medicine: { select: { id: true, name: true } },
+                    medicine: {
+                        select: {
+                            id: true,
+                            name: true,
+                            seller: { select: { id: true, name: true } },
+                        },
+                    },
                 },
             },
         },
@@ -158,7 +207,9 @@ export const adminService = {
     getAdminStatistics,
     updateUserStatus,
     getAllMedicines,
+    toggleMedicine,
     getAllOrders,
+    updateOrderStatus,
     updateCategory,
     deleteCategory,
 };

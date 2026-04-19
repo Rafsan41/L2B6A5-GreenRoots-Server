@@ -4,6 +4,7 @@ import { requireAuth, UserRole } from "../../lib/authMiddleware.js";
 
 const router = express.Router();
 
+router.get("/seller/medicines", requireAuth(UserRole.SELLER), sellerController.getSellerMedicines);
 router.post("/seller/medicines", requireAuth(UserRole.SELLER), sellerController.createMedicine);
 
 router.put("/seller/medicines/:id", requireAuth(UserRole.SELLER), sellerController.updateMedicine);

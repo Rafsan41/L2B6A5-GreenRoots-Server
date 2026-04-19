@@ -4,12 +4,11 @@ import { requireAuth, UserRole } from "../../lib/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/orders", requireAuth(UserRole.CUSTOMER), orderController.createOrder);
+const canOrder = requireAuth(UserRole.CUSTOMER, UserRole.SELLER);
 
-router.get("/orders", requireAuth(UserRole.CUSTOMER), orderController.getMyOrders);
-
-router.get("/orders/:id", requireAuth(UserRole.CUSTOMER), orderController.getOrderById);
-
-router.patch("/orders/:id/cancel", requireAuth(UserRole.CUSTOMER), orderController.cancelOrder);
+router.post("/orders",           canOrder, orderController.createOrder);
+router.get("/orders",            canOrder, orderController.getMyOrders);
+router.get("/orders/:id",        canOrder, orderController.getOrderById);
+router.patch("/orders/:id/cancel", canOrder, orderController.cancelOrder);
 
 export const orderRouter: Router = router;

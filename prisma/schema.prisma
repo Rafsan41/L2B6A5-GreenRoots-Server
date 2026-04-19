@@ -75,8 +75,22 @@ model Medicine {
   manufacturer         String
   dosage               String? // e.g., "500mg", "10ml"
   form                 String? // e.g., "Tablet", "Capsule", "Syrup", "Cream"
-  prescriptionRequired Boolean @default(false)
-  isActive             Boolean @default(true) // Soft delete / visibility toggle
+  prescriptionRequired Boolean  @default(false)
+  isActive             Boolean  @default(true)
+  isFeatured           Boolean  @default(false)
+
+  // Detail page enrichment fields
+  keyBadges   String[]
+  uses        String[]
+  ingredients String?  @db.Text
+  sideEffects String[]
+  storage     String?  @db.Text
+
+  // Structured dosage info
+  dosageAdults   String?
+  dosageChildren String?
+  dosageMaxDaily String?
+  dosageNotes    String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

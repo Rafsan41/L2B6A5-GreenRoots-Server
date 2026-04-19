@@ -1,6 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import { sellerService } from "./seller.service.js";
 
+const getSellerMedicines = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const result = await sellerService.getSellerMedicines(req.user!.id);
+        res.status(200).json({ success: true, message: "Medicines fetched successfully", data: result });
+    } catch (error: any) { next(error) }
+};
+
 const createMedicine = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { name, slug, description, price, manufacturer, categoryId } = req.body;
@@ -101,6 +108,7 @@ const getCustomerStats = async (req: Request, res: Response, next: NextFunction)
 };
 
 export const sellerController = {
+    getSellerMedicines,
     createMedicine,
     updateMedicine,
     deleteMedicine,

@@ -18,15 +18,19 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql", // or "mysql", "postgresql", ...etc
   }),
-  baseURL: process.env.APP_URL,
-  trustedOrigins: [process.env.APP_URL!],
+  baseURL: process.env.APP_URL,           // http://localhost:5000 — where better-auth runs
+  trustedOrigins: [
+    "http://localhost:3000",               // Next.js frontend
+    process.env.APP_URL!,                  // Express server itself
+    ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
+  ],
   user: {
     additionalFields: {
       role: {
         type: "string",
         required: false
       },
-      image: {          // ← add this if you want image on sign-up
+      image: {
         type: "string",
         required: false
       },
@@ -41,6 +45,19 @@ export const auth = betterAuth({
       }
     }
   },
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user) => {
+          // Default role to CUSTOMER for Google OAuth (no role passed)
+          const role = (user as any).role ?? "CUSTOMER"
+          // Sellers must wait for admin approval
+          const status = role === "SELLER" ? "PENDING" : "ACTIVE"
+          return { data: { ...user, role, status } }
+        },
+      },
+    },
+  },
   emailAndPassword: {
     enabled: true,
     autoSignIn: false,
@@ -51,7 +68,7 @@ export const auth = betterAuth({
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, url, token }, request) => {
       try {
-        const verificationUrl = `${process.env.APP_URL}/verify-email?token=${token}`;
+        const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${token}`;
 
         const emailHtml = `
     <!DOCTYPE html>

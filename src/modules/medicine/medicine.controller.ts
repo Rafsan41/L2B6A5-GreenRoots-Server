@@ -31,7 +31,25 @@ const getMedicineById = async (req: Request, res: Response, next: NextFunction) 
     }
 };
 
+const getMedicineBySlug = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const result = await medicineService.getMedicineBySlug(req.params.slug as string);
+        if (!result) {
+            res.status(404).json({ success: false, message: "Medicine not found" });
+            return;
+        }
+        res.status(200).json({
+            success: true,
+            message: "Medicine fetched successfully",
+            data: result,
+        });
+    } catch (error: any) {
+        next(error)
+    }
+};
+
 export const medicineController = {
     getAllMedicines,
     getMedicineById,
+    getMedicineBySlug,
 };
