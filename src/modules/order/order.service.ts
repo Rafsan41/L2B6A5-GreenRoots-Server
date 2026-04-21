@@ -26,6 +26,12 @@ const createOrder = async (customerId: string, data: CreateOrderData) => {
         throw new Error("One or more medicines not found or inactive");
     }
 
+    // Sellers cannot order their own medicines
+    const ownMedicine = medicines.find((m) => m.sellerId === customerId);
+    if (ownMedicine) {
+        throw new Error(`You cannot order your own medicine "${ownMedicine.name}"`);
+    }
+
     for (const item of data.items) {
         const medicine = medicines.find((m) => m.id === item.medicineId)!;
         if (medicine.stock < item.quantity) {
