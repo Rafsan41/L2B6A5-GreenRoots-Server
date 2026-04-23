@@ -39,7 +39,6 @@ A RESTful API backend for MediStore — a full-stack OTC (over-the-counter) medi
 - 🏪 **Seller workflow** — Register → Email verify → Admin approval → Go live
 - 💊 **Medicine catalog** — Full CRUD, soft delete, category filtering, search & pagination
 - 🛒 **Order system** — Place, track, cancel orders with status flow
-- 📦 **Supply chain** — Sellers bulk-order from the platform; stock auto-restocks on delivery
 - ⭐ **Reviews** — Medicine reviews (one per order) + threaded seller reviews with replies
 - 📊 **Dashboards** — Stats for customers, sellers, and admins
 - 📧 **Email notifications** — Branded HTML verification emails via Nodemailer (Gmail SMTP)
