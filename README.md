@@ -19,7 +19,7 @@ A RESTful API backend for MediStore — a full-stack OTC (over-the-counter) medi
 |---|---|
 | 🖥️ **Frontend Live** | https://medicinestores.vercel.app |
 | ⚙️ **Backend Live** | https://medistores.vercel.app |
-| 📦 **Frontend Repo** | https://github.com/Rafsan41/L2B6A4 |
+| 📦 **Frontend Repo** | https://github.com/Rafsan41/L2B6A4-Prisma-Next-MediStore-Client |
 | 📦 **Backend Repo** | https://github.com/Rafsan41/L2B6A4-Prisma-Next-MediStore-Server |
 
 ### Test Credentials
