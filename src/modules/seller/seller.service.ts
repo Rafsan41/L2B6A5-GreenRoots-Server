@@ -39,7 +39,7 @@ interface UpdateMedicineData {
 
 const updateMedicine = async (id: string, sellerId: string, data: UpdateMedicineData) => {
     const medicine = await prisma.medicine.findFirst({ where: { id, sellerId } });
-    if (!medicine) throw new Error("Medicine not found or you do not own it");
+    if (!medicine) throw new Error("Product not found or you do not own it");
 
     const updated = await prisma.medicine.update({
         where: { id },
@@ -50,8 +50,8 @@ const updateMedicine = async (id: string, sellerId: string, data: UpdateMedicine
 
 const deleteMedicine = async (id: string, sellerId: string) => {
     const medicine = await prisma.medicine.findFirst({ where: { id, sellerId } });
-    if (!medicine) throw new Error("Medicine not found or you do not own it");
-    if (!medicine.isActive) throw new Error("Medicine is already deleted");
+    if (!medicine) throw new Error("Product not found or you do not own it");
+    if (!medicine.isActive) throw new Error("Product is already deleted");
 
     // Soft delete
     await prisma.medicine.update({

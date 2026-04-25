@@ -73,75 +73,74 @@ export const auth = betterAuth({
         const emailHtml = `
     <!DOCTYPE html>
     <html lang="en">
-    <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Verify your email</title></head>
-    <body style="margin:0;padding:0;background-color:#f0f4f8;font-family:Arial,sans-serif;">
+    <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Verify your email — GreenRoots</title></head>
+    <body style="margin:0;padding:0;background-color:#f5f2eb;font-family:Georgia,serif;">
       <table width="100%" cellpadding="0" cellspacing="0" style="padding:32px 16px;">
         <tr><td align="center">
-          <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #d1dce8;">
-    
+          <table width="560" cellpadding="0" cellspacing="0" style="background:#fefcf7;border-radius:4px;overflow:hidden;border:1px solid #d8c99a;">
+
             <!-- Header -->
             <tr>
-              <td style="background:#0a5c4a;padding:32px 40px 28px;text-align:center;">
-                <table cellpadding="0" cellspacing="0" style="display:inline-table;margin:0 auto 4px;">
-                  <tr>
-                    <td style="padding-right:10px;vertical-align:middle;">
-                      <table cellpadding="0" cellspacing="0" style="background:#1d9e75;border-radius:6px;width:28px;height:28px;">
-                        <tr><td align="center" style="font-size:18px;color:#fff;line-height:28px;">✚</td></tr>
-                      </table>
-                    </td>
-                    <td style="vertical-align:middle;">
-                      <span style="font-family:Georgia,serif;font-size:22px;font-weight:bold;color:#ffffff;letter-spacing:0.5px;">MediStore</span>
-                    </td>
-                  </tr>
-                </table>
-                <p style="color:#9fe1cb;font-size:11px;margin:4px 0 0;letter-spacing:1.5px;font-family:'Courier New',monospace;text-transform:uppercase;">Your trusted pharmacy partner</p>
+              <td style="background:#152010;padding:36px 40px 30px;text-align:center;">
+                <!-- Leaf SVG icon -->
+                <div style="margin:0 auto 12px;width:36px;height:40px;">
+                  <svg width="36" height="40" viewBox="0 0 36 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 39C18 39 3 27 3 16C3 7.716 9.716 1 18 1C26.284 1 33 7.716 33 16C33 27 18 39 18 39Z"
+                          fill="rgba(50,110,35,0.5)" stroke="rgba(100,180,60,0.6)" stroke-width="1.2"/>
+                    <line x1="18" y1="6" x2="18" y2="37" stroke="rgba(140,220,90,0.5)" stroke-width="0.9"/>
+                    <line x1="18" y1="14" x2="12" y2="20" stroke="rgba(140,220,90,0.4)" stroke-width="0.7"/>
+                    <line x1="18" y1="20" x2="24" y2="26" stroke="rgba(140,220,90,0.4)" stroke-width="0.7"/>
+                  </svg>
+                </div>
+                <span style="font-family:Georgia,serif;font-size:28px;font-weight:bold;color:#d4c4a0;letter-spacing:2px;">GreenRoots</span>
+                <p style="color:rgba(175,148,82,0.65);font-size:10px;margin:6px 0 0;letter-spacing:3px;font-family:'Courier New',monospace;text-transform:uppercase;">Rooted in Nature &middot; Delivered to You</p>
               </td>
             </tr>
-    
-            <!-- Accent bar -->
-            <tr><td style="height:4px;background:#1d9e75;font-size:0;">&nbsp;</td></tr>
-    
+
+            <!-- Accent bar — amber gradient -->
+            <tr><td style="height:3px;background:linear-gradient(90deg,#8a5a2a,#c8a45a,#8a5a2a);font-size:0;">&nbsp;</td></tr>
+
             <!-- Body -->
             <tr>
-              <td style="padding:40px 40px 32px;">
-                <h1 style="font-family:Georgia,serif;font-size:24px;font-weight:normal;color:#0a3d2e;margin:0 0 8px;">Verify your email address</h1>
-                <p style="font-size:14px;color:#5a7a6f;margin:0 0 28px;line-height:1.6;">Hi ${user.name ?? "there"}, welcome to MediStore. Please confirm your email address to activate your account and start managing your health orders.</p>
-    
+              <td style="padding:40px 44px 32px;">
+                <h1 style="font-family:Georgia,serif;font-size:22px;font-weight:normal;color:#1a2e10;margin:0 0 10px;letter-spacing:0.5px;">Verify your email address</h1>
+                <p style="font-size:14px;color:#4a6040;margin:0 0 28px;line-height:1.7;">Hi ${user.name ?? "there"}, welcome to GreenRoots. Please confirm your email address to activate your account and explore our herbal &amp; organic wellness collection.</p>
+
                 <!-- CTA -->
                 <table width="100%" cellpadding="0" cellspacing="0">
-                  <tr><td align="center" style="padding:32px 0;">
-                    <a href="${verificationUrl}" style="display:inline-block;background:#0a5c4a;color:#ffffff;text-decoration:none;font-size:15px;font-weight:600;letter-spacing:0.3px;padding:14px 40px;border-radius:6px;">Verify Email Address</a>
+                  <tr><td align="center" style="padding:28px 0;">
+                    <a href="${verificationUrl}" style="display:inline-block;background:#152010;color:#d4c4a0;text-decoration:none;font-family:'Courier New',monospace;font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:14px 40px;border-radius:2px;border:1px solid rgba(175,148,82,0.4);">Verify Email Address</a>
                   </td></tr>
                 </table>
-    
+
                 <!-- Divider -->
-                <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="border-top:1px solid #d1ece4;padding:0;font-size:0;">&nbsp;</td></tr></table>
-    
+                <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="border-top:1px solid #d8c99a;padding:0;font-size:0;">&nbsp;</td></tr></table>
+
                 <!-- Fallback link -->
-                <p style="font-size:12px;color:#7a9e94;line-height:1.7;margin:20px 0 6px;">If the button doesn't work, copy and paste this link into your browser:</p>
-                <p style="font-size:12px;color:#0f6e56;font-family:'Courier New',monospace;word-break:break-all;margin:0;background:#e1f5ee;padding:10px 12px;border-radius:4px;border-left:3px solid #1d9e75;">${verificationUrl}</p>
-    
+                <p style="font-size:12px;color:#7a8a6a;line-height:1.7;margin:20px 0 6px;">If the button doesn't work, copy and paste this link into your browser:</p>
+                <p style="font-size:11px;color:#4a6040;font-family:'Courier New',monospace;word-break:break-all;margin:0;background:#eef2e8;padding:10px 12px;border-radius:2px;border-left:3px solid #7ec85a;">${verificationUrl}</p>
+
                 <!-- Expiry notice -->
                 <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:24px;">
                   <tr>
-                    <td style="background:#faeeda;border-radius:6px;border-left:3px solid #ef9f27;padding:12px 14px;">
-                      <p style="font-size:12px;color:#633806;margin:0;line-height:1.6;">⏱ This link expires in <strong>24 hours</strong>. If you didn't create a MediStore account, you can safely ignore this email.</p>
+                    <td style="background:#faeeda;border-radius:2px;border-left:3px solid #c8a45a;padding:12px 14px;">
+                      <p style="font-size:12px;color:#633806;margin:0;line-height:1.6;">&#9200; This link expires in <strong>24 hours</strong>. If you didn't create a GreenRoots account, you can safely ignore this email.</p>
                     </td>
                   </tr>
                 </table>
               </td>
             </tr>
-    
+
             <!-- Footer -->
             <tr>
-              <td style="background:#f5faf8;border-top:1px solid #d1ece4;padding:20px 40px;text-align:center;">
-                <p style="font-size:11px;color:#8aada4;margin:0;line-height:1.8;">
-                  MediStore Health Technologies &middot; support@medistore.app<br/>
-                  You're receiving this because you registered at medistore.app
+              <td style="background:#f0ede4;border-top:1px solid #d8c99a;padding:20px 44px;text-align:center;">
+                <p style="font-size:11px;color:#8a7a5a;margin:0;line-height:1.8;font-family:'Courier New',monospace;letter-spacing:0.5px;">
+                  GreenRoots &middot; support@greenroots.app<br/>
+                  You're receiving this because you registered at greenroots.app
                 </p>
               </td>
             </tr>
-    
+
           </table>
         </td></tr>
       </table>
@@ -149,10 +148,10 @@ export const auth = betterAuth({
     </html>`;
 
         const info = await transporter.sendMail({
-          from: '"MediStore" <noreply@medistore.app>',
+          from: '"GreenRoots" <noreply@greenroots.app>',
           to: user.email,
-          subject: "Verify your MediStore email address",
-          text: `Hi ${user.name ?? "there"},\n\nPlease verify your email by visiting:\n${verificationUrl}\n\nThis link expires in 24 hours.\n\n— MediStore`,
+          subject: "Verify your GreenRoots email address",
+          text: `Hi ${user.name ?? "there"},\n\nPlease verify your email by visiting:\n${verificationUrl}\n\nThis link expires in 24 hours.\n\n— GreenRoots`,
           html: emailHtml,
         });
 

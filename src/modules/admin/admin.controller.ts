@@ -50,7 +50,7 @@ const getAllMedicines = async (_req: Request, res: Response, next: NextFunction)
         const result = await adminService.getAllMedicines();
         res.status(200).json({
             success: true,
-            message: "Medicines fetched successfully",
+            message: "Products fetched successfully",
             data: result,
         });
     } catch (error: any) {

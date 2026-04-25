@@ -16,7 +16,7 @@ const createReview = async (customerId: string, data: CreateReviewData) => {
         where: { id: data.medicineId, isActive: true },
     });
     if (!medicine) {
-        throw new Error("Medicine not found");
+        throw new Error("Product not found");
     }
 
     // Verify the customer has ordered this medicine

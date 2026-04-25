@@ -4,7 +4,7 @@ import { sellerService } from "./seller.service.js";
 const getSellerMedicines = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const result = await sellerService.getSellerMedicines(req.user!.id);
-        res.status(200).json({ success: true, message: "Medicines fetched successfully", data: result });
+        res.status(200).json({ success: true, message: "Products fetched successfully", data: result });
     } catch (error: any) { next(error) }
 };
 
@@ -14,7 +14,7 @@ const createMedicine = async (req: Request, res: Response, next: NextFunction) =
         const result = await sellerService.createMedicine(req.user!.id, req.body);
         res.status(201).json({
             success: true,
-            message: "Medicine created successfully",
+            message: "Product created successfully",
             data: result,
         });
     } catch (error: any) {
@@ -36,7 +36,7 @@ const updateMedicine = async (req: Request, res: Response, next: NextFunction) =
         const result = await sellerService.updateMedicine(id as string, req.user!.id, req.body);
         res.status(200).json({
             success: true,
-            message: "Medicine updated successfully",
+            message: "Product updated successfully",
             data: result,
         });
     } catch (error: any) {

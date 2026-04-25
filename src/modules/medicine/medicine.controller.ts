@@ -6,7 +6,7 @@ const getAllMedicines = async (req: Request, res: Response, next: NextFunction) 
         const result = await medicineService.getAllMedicines(req.query as any);
         res.status(200).json({
             success: true,
-            message: "Medicines fetched successfully",
+            message: "Products fetched successfully",
             data: result,
         });
     } catch (error: any) {
@@ -18,12 +18,12 @@ const getMedicineById = async (req: Request, res: Response, next: NextFunction) 
     try {
         const result = await medicineService.getMedicineById(req.params.id as string);
         if (!result) {
-            res.status(404).json({ success: false, message: "Medicine not found" });
+            res.status(404).json({ success: false, message: "Product not found" });
             return;
         }
         res.status(200).json({
             success: true,
-            message: "Medicine fetched successfully",
+            message: "Product fetched successfully",
             data: result,
         });
     } catch (error: any) {
@@ -35,12 +35,12 @@ const getMedicineBySlug = async (req: Request, res: Response, next: NextFunction
     try {
         const result = await medicineService.getMedicineBySlug(req.params.slug as string);
         if (!result) {
-            res.status(404).json({ success: false, message: "Medicine not found" });
+            res.status(404).json({ success: false, message: "Product not found" });
             return;
         }
         res.status(200).json({
             success: true,
-            message: "Medicine fetched successfully",
+            message: "Product fetched successfully",
             data: result,
         });
     } catch (error: any) {

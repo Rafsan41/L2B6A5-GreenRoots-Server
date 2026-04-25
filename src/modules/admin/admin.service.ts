@@ -36,7 +36,7 @@ const updateUserStatus = async (id: string, status: UserStatus) => {
 
 const toggleMedicine = async (id: string) => {
     const med = await prisma.medicine.findUnique({ where: { id } });
-    if (!med) throw new Error("Medicine not found");
+    if (!med) throw new Error("Product not found");
     return prisma.medicine.update({ where: { id }, data: { isActive: !med.isActive } });
 };
 
