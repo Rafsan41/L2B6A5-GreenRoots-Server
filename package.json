@@ -1,8 +1,8 @@
 {
-  "name": "prisma-next-medistore-server",
+  "name": "greenroots-server",
   "version": "1.0.0",
   "type": "module",
-  "description": "Your Trusted Online Medecine Shop",
+  "description": "GreenRoots Server",
   "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
