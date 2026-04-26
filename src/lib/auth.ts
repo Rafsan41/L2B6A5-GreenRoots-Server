@@ -20,8 +20,9 @@ export const auth = betterAuth({
   }),
   baseURL: process.env.APP_URL,           // http://localhost:5000 — where better-auth runs
   trustedOrigins: [
-    "http://localhost:3000",               // Next.js frontend
-    process.env.APP_URL!,                  // Express server itself
+    "http://localhost:3000",
+    "http://localhost:5000",
+    process.env.APP_URL!,
     ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
   ],
   user: {
