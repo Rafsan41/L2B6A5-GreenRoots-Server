@@ -44,6 +44,14 @@ enum OrderStatus {
 
 enum PaymentMethod {
   CASH_ON_DELIVERY
+  ONLINE
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  CANCELLED
 }
 
 model Category {
@@ -121,6 +129,9 @@ model Order {
   shippingCity       String
   shippingPostalCode String?
   paymentMethod      PaymentMethod @default(CASH_ON_DELIVERY)
+  paymentStatus      PaymentStatus @default(PENDING)
+  sslTranId          String?
+  sslValId           String?
   notes              String?       @db.Text
 
   createdAt DateTime @default(now())

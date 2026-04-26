@@ -14,6 +14,7 @@ app.use(cors({
     credentials: true,
 }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // ── Auth ───────────────────────────────────────────────────────────────────
 app.all('/api/auth/*splat', toNodeHandler(auth));

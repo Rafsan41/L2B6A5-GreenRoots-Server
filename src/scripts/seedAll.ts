@@ -7,6 +7,22 @@
 
 import { prisma } from "../lib/prisma.js";
 import crypto from "crypto";
+import { randomBytes, scrypt } from "node:crypto";
+
+// ── Password hashing (matches Better Auth's @better-auth/utils/password) ─────
+async function hashPassword(password: string): Promise<string> {
+  const salt = randomBytes(16).toString("hex");
+  const key = await new Promise<Buffer>((resolve, reject) => {
+    scrypt(
+      password.normalize("NFKC"),
+      salt,
+      64,
+      { N: 16384, r: 16, p: 1, maxmem: 128 * 16384 * 16 * 2 },
+      (err, derivedKey) => { if (err) reject(err); else resolve(derivedKey); },
+    );
+  });
+  return `${salt}:${key.toString("hex")}`;
+}
 
 // ── Helper: short random ID (matches Better Auth format) ─────────────────────
 const uid = () => crypto.randomBytes(18).toString("base64url").slice(0, 28);
@@ -546,6 +562,43 @@ async function seedAll() {
     console.log(`   ✓ ${user.role.padEnd(8)} — ${user.email}`);
   }
 
+  // ─── Accounts (passwords) ─────────────────────────────────────────────────
+  console.log("\n🔑 Upserting credential accounts...");
+  const credentials = [
+    { email: "admin@greenroots.app",    password: "Admin@greenroots1"    },
+    { email: "seller@greenroots.app",   password: "Seller@greenroots1"   },
+    { email: "customer@greenroots.app", password: "Customer@greenroots1" },
+  ];
+
+  for (const cred of credentials) {
+    const user = await prisma.user.findUnique({ where: { email: cred.email } });
+    if (!user) { console.log(`   ⚠  User ${cred.email} not found — skipping`); continue; }
+
+    const existing = await prisma.account.findFirst({
+      where: { userId: user.id, providerId: "credential" },
+    });
+
+    const hashed = await hashPassword(cred.password);
+
+    if (existing) {
+      await prisma.account.update({
+        where: { id: existing.id },
+        data: { password: hashed },
+      });
+    } else {
+      await prisma.account.create({
+        data: {
+          id:         crypto.randomBytes(18).toString("base64url").slice(0, 28),
+          accountId:  user.id,
+          providerId: "credential",
+          userId:     user.id,
+          password:   hashed,
+        },
+      });
+    }
+    console.log(`   ✓ ${cred.email}  →  password set`);
+  }
+
   // Resolve the seller's actual DB id (upsert may return different id if email already existed)
   const dbSeller = await prisma.user.findUnique({ where: { email: "seller@greenroots.app" } });
   const sellerId = dbSeller!.id;
@@ -589,17 +642,21 @@ async function seedAll() {
   }
 
   console.log(`\n✅ Seed complete!`);
-  console.log(`   • Users:    ${users.length} upserted`);
+  console.log(`   • Users:      ${users.length} upserted`);
+  console.log(`   • Accounts:   ${credentials.length} passwords set`);
   console.log(`   • Categories: ${categories.length} upserted`);
-  console.log(`   • Products:  ${created} upserted, ${skipped} skipped`);
-  console.log("\n🍃 GreenRoots database is ready.\n");
+  console.log(`   • Products:   ${created} upserted, ${skipped} skipped`);
 
-  // Print user IDs for reference
   const admin    = await prisma.user.findUnique({ where: { email: "admin@greenroots.app"    } });
   const seller   = await prisma.user.findUnique({ where: { email: "seller@greenroots.app"   } });
   const customer = await prisma.user.findUnique({ where: { email: "customer@greenroots.app" } });
 
-  console.log("📋 User IDs (save these for testing):");
+  console.log("\n🍃 GreenRoots database is ready.\n");
+  console.log("🔐 Login credentials:");
+  console.log("   Admin    :  admin@greenroots.app     /  Admin@greenroots1");
+  console.log("   Seller   :  seller@greenroots.app    /  Seller@greenroots1");
+  console.log("   Customer :  customer@greenroots.app  /  Customer@greenroots1");
+  console.log("\n📋 User IDs:");
   console.log(`   Admin    : ${admin?.id}`);
   console.log(`   Seller   : ${seller?.id}`);
   console.log(`   Customer : ${customer?.id}`);

@@ -7,6 +7,7 @@ import { reviewRouter } from "../modules/review/review.router.js";
 import { sellerRouter } from "../modules/seller/seller.router.js";
 import { adminRouter } from "../modules/admin/admin.router.js";
 import { sellerReviewRouter } from "../modules/sellerReview/sellerReview.router.js";
+import { paymentRouter } from "../modules/payment/payment.router.js";
 
 const router = Router();
 
@@ -18,5 +19,6 @@ router.use(reviewRouter);
 router.use(sellerRouter);
 router.use(adminRouter);
 router.use(sellerReviewRouter);
+router.use(paymentRouter);
 
 export default router;
