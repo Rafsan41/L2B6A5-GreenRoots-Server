@@ -18,7 +18,7 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql", // or "mysql", "postgresql", ...etc
   }),
-  baseURL: process.env.APP_URL,           // http://localhost:5000 — where better-auth runs
+  baseURL: process.env.FRONTEND_URL,      // frontend proxy URL — ensures OAuth callbacks go through Next.js proxy
   trustedOrigins: [
     "http://localhost:3000",
     "http://localhost:5000",
